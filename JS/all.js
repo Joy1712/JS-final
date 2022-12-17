@@ -182,3 +182,61 @@ deleteAllBtn.addEventListener("click",function(e){
     })
 
 })
+
+//填寫資料送出訂單
+
+const orderInfoBtn = document.querySelector(".orderInfo-btn");
+orderInfoBtn.addEventListener("click",function(e){
+    e.preventDefault();
+    // 判斷購物車要有東西&填寫資料不為空
+    if (cartData.length ==0){
+        alert("請將商品加入購物車再結帳唷!");
+        return;
+    }
+
+    const customerName = document.querySelector("#customerName").value;
+    const customerPhone = document.querySelector("#customerPhone").value;
+    const customerEmail = document.querySelector("#customerEmail").value;
+    const customerAddress = document.querySelector("#customerAddress").value;
+    const tradeWay = document.querySelector("#tradeWay").value; //取輸入的值所以要加上.value
+
+    if ( customerName =="" ||customerPhone =="" ||customerEmail =="" ||customerAddress =="" ||tradeWay ==""  ){
+        alert("填寫資料不得為空");
+        return;
+    }else{
+        alert("訂單即將將送出");
+    }
+
+    //戳api把資料送出
+    let orderData = {
+        "data": {
+          "user": {
+            "name": customerName,
+            "tel": customerPhone,
+            "email": customerEmail,
+            "address": customerAddress,
+            "payment": tradeWay
+          }
+        }
+      }
+
+    axios.post(`https://livejs-api.hexschool.io/api/livejs/v1/customer/${api_path}/orders`, orderData )
+    .then(function(response){
+        alert("訂單已送出");
+        console.log(response.data)
+        getCartList();
+        //把填寫訂單的輸入框內容都清空
+        document.querySelector("#customerName").value="";
+        document.querySelector("#customerPhone").value="";
+        document.querySelector("#customerEmail").value="";
+        document.querySelector("#customerAddress").value="";
+        document.querySelector("#tradeWay").value="ATM";
+        
+    })
+    .catch(function(error){
+        console.log(error);
+    })
+
+
+
+})
